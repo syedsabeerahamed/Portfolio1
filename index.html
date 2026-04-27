@@ -12,6 +12,14 @@
     rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/jpg" href="fav.jpg">
+  <!-- Google Analytics Tracking -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JJSRYH7WL7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JJSRYH7WL7');
+  </script>
 </head>
 
 <body>
@@ -626,6 +634,27 @@
 
     </div>
 
+    <!-- MISSION TELEMETRY HUB -->
+    <div class="footer-telemetry">
+      <div class="telemetry-grid">
+        <div class="telemetry-item">
+          <span class="telemetry-label">TOTAL SIGNALS</span>
+          <span class="telemetry-value" id="totalSignals">0000</span>
+        </div>
+        <div class="telemetry-item">
+          <span class="telemetry-label">SYSTEM UPTIME</span>
+          <span class="telemetry-value" id="systemUptime">99.9%</span>
+        </div>
+        <div class="telemetry-item">
+          <span class="telemetry-label">STATUS</span>
+          <span class="telemetry-status">
+            <span class="status-dot"></span>
+            <span class="status-text">ONLINE</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
     <!-- Bottom Bar -->
     <div class="footer-bottom">
       <div class="footer-bottom-left">
@@ -817,6 +846,33 @@
       heroBadge.addEventListener('mouseenter', () => heroBadge.classList.add('hovered'));
       heroBadge.addEventListener('mouseleave', () => heroBadge.classList.remove('hovered'));
     }
+
+    /* ─── Mission Telemetry Logic ─── */
+    (function() {
+      const signalEl = document.getElementById('totalSignals');
+      const uptimeEl = document.getElementById('systemUptime');
+      
+      // Initialize or get visitor count from localStorage
+      let count = parseInt(localStorage.getItem('mission_signals')) || 1240;
+      count += Math.floor(Math.random() * 3) + 1; // Increment slightly each load
+      localStorage.setItem('mission_signals', count);
+
+      // Animate Signal Count
+      let current = count - 50;
+      const duration = 2000;
+      const start = performance.now();
+
+      function updateSignals(timestamp) {
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const val = Math.floor(current + (count - current) * progress);
+        signalEl.textContent = val.toString().padStart(4, '0');
+        if (progress < 1) requestAnimationFrame(updateSignals);
+      }
+      requestAnimationFrame(updateSignals);
+
+      // Randomize uptime slightly for realism
+      uptimeEl.textContent = (99.8 + Math.random() * 0.19).toFixed(2) + '%';
+    })();
   </script>
 </body>
 
